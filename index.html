@@ -1837,14 +1837,14 @@ function showProfile() {
             <div class="progress-title">Completezza del profilo</div>
             <div class="progress-track">
               <div class="track-bar"></div>
-              <div class="track-fill"></div>
+              <div class="track-fill" style="width:${householdConfirmed ? '55%' : '24%'}"></div>
               <div class="progress-step">
                 <div class="step-icon active">${ICON_LEAF}</div>
                 <div class="step-label">Primi passi</div>
               </div>
               <div class="progress-step">
-                <div class="step-icon inactive">
-                  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="rgba(23,31,54,0.4)" stroke-width="1.5"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 001 1h3v-4h6v4h3a1 1 0 001-1V10"/></svg>
+                <div class="step-icon ${householdConfirmed ? 'active' : 'inactive'}">
+                  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="${householdConfirmed ? 'white' : 'rgba(23,31,54,0.4)'}" stroke-width="1.5"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 001 1h3v-4h6v4h3a1 1 0 001-1V10"/></svg>
                 </div>
                 <div class="step-label">Efficace</div>
               </div>
