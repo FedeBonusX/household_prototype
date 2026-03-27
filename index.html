@@ -353,6 +353,17 @@
     }
     .text-field.error .error-text { display: block; }
 
+    .gender-options { display: flex; gap: 8px; margin-top: 4px; }
+    .gender-btn {
+      flex: 1; padding: 12px; border: 2px solid rgba(23,31,54,0.12);
+      border-radius: 8px; background: #fff; cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px; font-weight: 500; color: #171f36;
+      text-align: center; transition: all 0.2s;
+    }
+    .gender-btn:hover { border-color: #1246c8; }
+    .gender-btn.selected { border-color: #1246c8; background: #f1f4fc; }
+
     /* Bottom Sheet / Guided Mode */
     .bottomsheet-backdrop {
       position: absolute; top: 0; left: 0; right: 0; bottom: 0;
@@ -1241,10 +1252,23 @@ function showPersonalData() {
         </div>
         <div class="text-field">
           <div class="input-wrapper">
+            <input type="text" id="input-surname" placeholder="Cognome del familiare" value="${current.surname || ''}" oninput="validatePD()">
+            <label>Cognome</label>
+          </div>
+        </div>
+        <div class="text-field">
+          <div class="input-wrapper">
             <input type="text" id="input-bd" inputmode="numeric" placeholder="GG/MM/AAAA" value="${formatBdForInput(current.birthdate)}" oninput="maskDateInput(event)" maxlength="10">
             <label>Data di nascita</label>
           </div>
           <div class="error-text">Data non valida. Usa il formato GG/MM/AAAA</div>
+        </div>
+        <div>
+          <label style="font-size:14px;font-weight:500;color:#171f36;display:block;margin-bottom:4px">Sesso</label>
+          <div class="gender-options">
+            <button type="button" class="gender-btn${current.gender === 'M' ? ' selected' : ''}" id="gender-m" onclick="selectGender('M')">Maschio</button>
+            <button type="button" class="gender-btn${current.gender === 'F' ? ' selected' : ''}" id="gender-f" onclick="selectGender('F')">Femmina</button>
+          </div>
         </div>
       </div>`,
     buttons: `${btnBack('showRelationshipType')} ${btnNext('btn-pd', 'handlePDNext')}`
@@ -1252,16 +1276,25 @@ function showPersonalData() {
   validatePD();
 }
 
+window.selectGender = function(g) {
+  current.gender = g;
+  document.getElementById('gender-m').classList.toggle('selected', g === 'M');
+  document.getElementById('gender-f').classList.toggle('selected', g === 'F');
+  validatePD();
+};
+
 window.validatePD = function() {
   const name = document.getElementById('input-name').value.trim();
+  const surname = document.getElementById('input-surname').value.trim();
   const bd = document.getElementById('input-bd').value;
   const bdValid = parseDMY(bd) !== null;
   current.name = name;
+  current.surname = surname;
   current.birthdate = bd;
   const bdField = document.getElementById('input-bd').closest('.text-field');
   if (bd.length === 10 && !bdValid) { bdField.classList.add('error'); }
   else { bdField.classList.remove('error'); }
-  document.getElementById('btn-pd').disabled = !(name && bdValid);
+  document.getElementById('btn-pd').disabled = !(name && surname && bdValid && current.gender);
 };
 
 window.handlePDNext = function() {
