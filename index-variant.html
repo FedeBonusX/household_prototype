@@ -1034,9 +1034,9 @@ function helpBtn(guidedKey) {
 const GUIDES = {
   nucleo_familiare: `<b>Chi fa parte del tuo nucleo familiare?</b><ul><li>Le persone con cui vivi e che sono familiari (es. genitori, figli, partner).</li><li>Anche il coniuge che vive altrove.</li><li>Anche i figli che vivono fuori casa, se non hanno reddito o famiglia propria.</li></ul>`,
 
-  rel_coniuge: `<b>Chi è il coniuge?</b><p>La persona con cui sei sposato/a.</p>`,
+  rel_coniuge: `<b>Chi è il coniuge?</b><p>La persona con cui sei sposato/a.</p><b>Chi è l'unito civilmente?</b><p>La persona con cui hai una unione civile. L'unione civile è una forma di legame legale simile al matrimonio, ma pensata per coppie dello stesso sesso. È riconosciuta dalla legge come una relazione ufficiale, con diritti e doveri simili a quelli del matrimonio.</p>`,
 
-  rel_convivente: `<b>Chi è l'unito civilmente?</b><p>La persona con cui hai una unione civile. L'unione civile è una forma di legame legale simile al matrimonio, ma pensata per coppie dello stesso sesso. È riconosciuta dalla legge come una relazione ufficiale, con diritti e doveri simili a quelli del matrimonio.</p>`,
+  rel_convivente: `<b>Chi è il convivente di fatto?</b><p>Il partner con cui vivi stabilmente, senza matrimonio né unione civile.</p>`,
 
   parents_relationship: `Se siete ancora sposati o avete un'unione civile ufficiale, anche se non vivete insieme, rispondi <b>SÌ</b>.<br><br>Se avete ottenuto una separazione legale (giudiziale o consensuale omologata da un giudice) o siete divorziati, rispondi <b>NO</b>.<br><br>Se non avete mai avuto un matrimonio o un'unione civile, rispondi <b>NO</b>.`,
 
@@ -1506,10 +1506,7 @@ window.confirmDelete = function() {
 
 window.editMember = function(i) {
   const member = members[i];
-  members.splice(i, 1);
-  current = { ...member, _editIndex: undefined };
-  // Store the position so dropSurvey can put it back
-  current._editIndex = i;
+  current = { ...member, _editIndex: i };
   showRelationshipType();
 };
 
@@ -2174,8 +2171,13 @@ window.handleUnemploymentType = function(value) {
 // --- FINISH ---
 function finishMember() {
   const finished = { ...current, complete: true };
+  const editIdx = finished._editIndex;
   delete finished._editIndex;
-  members.push(finished);
+  if (editIdx !== undefined) {
+    members[editIdx] = finished;
+  } else {
+    members.push(finished);
+  }
   current = {};
   showEmpty();
   showToast('Dati aggiunti');
